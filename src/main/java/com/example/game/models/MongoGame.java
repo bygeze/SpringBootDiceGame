@@ -2,44 +2,29 @@ package com.example.game.models;
 
 import java.util.Random;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
-public class Game {
+//@Document("games")
+public class MongoGame {
+	
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private String id;
-	
-	@Column
-	private int dado1;
-	
-	@Column
-	private int dado2;
-	
-	@Column
 	private boolean result;
+	private int dado1;
+	private int dado2;
+	private String userId;
 	
-	//@ManyToOne
-	//@JoinColumn(name="user_id")
-	//private User user;
-	
-	public Game() {
+	public MongoGame() {
 		
 	}
 	
-	/*
-	public Game(User user) {
-		this.user = user;
+	public MongoGame(String user_id) {
 		play();
-	}*/
+		this.userId = user_id;
+	}
 	
 	public String getId() {
 		return id;
@@ -71,6 +56,13 @@ public class Game {
 	
 	public void setResult(Boolean result) {
 		this.result = result;
+	}
+	
+	public MongoGame(String id, boolean result, int dado1, int dado2) {
+		this.id = id;
+		this.result = result;
+		this.dado1 = dado1;
+		this.dado2 = dado2;
 	}
 	
 	private void play() {

@@ -1,4 +1,4 @@
-package com.example.game.repositories;
+package com.example.game.repositories.mysql;
 
 import java.util.List;
 
@@ -11,19 +11,21 @@ import org.springframework.stereotype.Repository;
 import com.example.game.models.User;
 
 @Repository
-public class UserRepositoryCustomImpl implements IUserRepositoryCustom {
+public class UserRepositoryCustomImpl  {
 	@PersistenceContext
 	EntityManager em;
 
+	/*
 	@Override
-	public List<User> findByUsername(String username) {
+	public List<User> findByUserUsername(String username) {
 		// TODO Auto-generated method stub
+		/*
 		TypedQuery<User> query = em.createQuery(
 				"SELECT * FROM users WHERE username = ?1", User.class);
 		
 		List<User> user = query.setParameter(1, username).getResultList();
 		
 		return user;
-	}
+	}*/
 
 }

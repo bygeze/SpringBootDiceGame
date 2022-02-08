@@ -15,17 +15,26 @@ import com.example.game.dto.MessageResponseDto;
 import com.example.game.dto.PlayerSuccessRateDto;
 import com.example.game.dto.ResponseDto;
 import com.example.game.models.Game;
+import com.example.game.models.MongoGame;
+import com.example.game.models.MongoUser;
 import com.example.game.models.User;
-import com.example.game.repositories.IGameRepository;
-import com.example.game.repositories.IUserRepository;
+import com.example.game.repositories.mongo.IMongoGameRepository;
+import com.example.game.repositories.mongo.IMongoUserRepository;
+import com.example.game.repositories.mysql.IGameRepository;
+import com.example.game.repositories.mysql.IUserRepository;
 
 @Service
 public class GameService implements IGameService {
-	private final IUserRepository userRepo;
-	private final IGameRepository gameRepo;
+	//private final IUserRepository userRepo;
+	//private final IGameRepository gameRepo;
+	@Autowired
+	private final IMongoUserRepository userRepo;
+	@Autowired
+	private final IMongoGameRepository gameRepo;
+	
 	
 	@Autowired
-	public GameService(IUserRepository userRepo, IGameRepository gameRepo) {
+	public GameService(IMongoUserRepository userRepo, IMongoGameRepository gameRepo) {
 		this.userRepo = userRepo;
 		this.gameRepo = gameRepo;
 	}
@@ -38,36 +47,38 @@ public class GameService implements IGameService {
 			return new MessageResponseDto("Username already exists.");
 		}
 		
-		User temp = new User(username, new Date());
+		MongoUser temp = new MongoUser(username, new Date());
 		temp = userRepo.save(temp);
 		return new MessageResponseDto("User \"" + temp.getUsername() + "\" created with Id: " + temp.getId());
 	}
 	
+	
 	@Override
-	public ResponseDto userPlayGame(Long id) {
-		Optional<User> user = userRepo.findById(id);
+	public ResponseDto userPlayGame(String id) {
+		Optional<MongoUser> user = userRepo.findByUsername(id);
 		
 		if(user.isEmpty()) {
 			return new MessageResponseDto("User doesnt exists.");
 		} else {
-			Game game = new Game(user.get());
+			MongoGame game = new MongoGame(user.get().getUsername());
 			game = gameRepo.save(game);
 			
 			return new GameDto(game.getId(), game.getDado1(), game.getDado2(), game.getResult());
 		}
 	}
 	
+
 	@Override
-	public List<ResponseDto> findAllGames(Long id) {
+	public List<ResponseDto> findAllGames(String id) {
 		List<ResponseDto> res = new ArrayList<>();
-		Optional<User> user = userRepo.findById(id);
+		Optional<MongoUser> user = userRepo.findByUsername(id);
 		if(user.isEmpty()) {
 			res.add(new MessageResponseDto("User doesnt exists."));
 			return res;
 		} else {
-			List<Game> games = gameRepo.findAllByUser(id);
+			List<MongoGame> games = gameRepo.findAllByUserId(id);
 			
-			for(Game game : games) {
+			for(MongoGame game : games) {
 				res.add(new GameDto(game.getId(), game.getDado1(), game.getDado2(), game.getResult()));
 			}
 			
@@ -76,31 +87,40 @@ public class GameService implements IGameService {
 	}
 	
 	@Override
-	public ResponseDto deleteAllGames(Long id) {
-		Optional<User> user = userRepo.findById(id);
+	public ResponseDto deleteAllGames(String username) {
+		Optional<MongoUser> user = userRepo.findByUsername(username);
+		
+		
+		List<MongoGame> deleteItems = gameRepo.findAllByUserId(username);
 		
 		if(user.isEmpty()) {
 			return new MessageResponseDto("User doesnt exists");
+		} else if(deleteItems.size() < 1) {
+			return new MessageResponseDto("User has no games registered");
 		} else {
-			return new MessageResponseDto(Integer.toString(gameRepo.deleteAllByUser(id)));
+			gameRepo.deleteAll(deleteItems);
+			return new MessageResponseDto("User has a clean record now");
 		}
 		// TODO Auto-generated method stub
 	}
 	
+	
 	@Override
 	public List<ResponseDto> findAllPlayersWithSuccessRate() {
 		List<ResponseDto> res = new ArrayList<>();
-		Iterable<User> userList = userRepo.findAll();
+		Iterable<MongoUser> userList = userRepo.findAll();
 		
 		if(userList instanceof Collection) {
-			if(((Collection<User>) userList).size() < 1) {
+			if(((Collection<MongoUser>) userList).size() < 1) {
 				res.add(new MessageResponseDto("No hay usuarios registrados."));
 				return res;
 			} else {
 				List<ResponseDto> toReturn = new ArrayList<>();
 				
-				for(User user : (Collection<User>) userList) {
-					List<Game> games = gameRepo.findAllByUser(user.getId());
+				System.out.println("Hasta aqui si");
+				
+				for(MongoUser user : (Collection<MongoUser>) userList) {
+					List<MongoGame> games = gameRepo.findAllByUserId(user.getUsername());
 					
 					toReturn.add(new PlayerSuccessRateDto(user.getUsername(), getSuccessRate(games)[2]));
 				}
@@ -118,18 +138,17 @@ public class GameService implements IGameService {
 		int totalSuccess = 0;
 		int totalGames = 0;
 		
-		Iterable<User> userList = userRepo.findAll();
+		Iterable<MongoUser> userList = userRepo.findAll();
 		
 		if(userList instanceof Collection) {
-			if(((Collection<User>) userList).size() < 1) {
+			if(((Collection<MongoUser>) userList).size() < 1) {
 				return new MessageResponseDto("No hay usuarios registrados.");
 			} else {
-				for(User user : (Collection<User>) userList) {
-					List<Game> games = gameRepo.findAllByUser(user.getId());
+				for(MongoUser user : (Collection<MongoUser>) userList) {
+					List<MongoGame> games = gameRepo.findAllByUserId(user.getUsername());
 					int[] sr = getSuccessRate(games);
 					totalSuccess += sr[0];
 					totalGames += sr[1];
-					
 				}
 				
 				float globalRate = (float) totalSuccess / totalGames;
@@ -143,17 +162,17 @@ public class GameService implements IGameService {
 	
 	@Override
 	public ResponseDto findLoser() {
-		User loserUser = null;
+		MongoUser loserUser = null;
 		int srLoser = 0;
-		Iterable<User> userList = userRepo.findAll();
+		Iterable<MongoUser> userList = userRepo.findAll();
 		
 		if(userList instanceof Collection) {
-			if(((Collection<User>) userList).size() < 1) {
+			if(((Collection<MongoUser>) userList).size() < 1) {
 				return new MessageResponseDto("No hay usuarios registrados.");
 			} else {
 				boolean firstLoopFlag = true;
-				for(User user : (Collection<User>) userList) {
-					List<Game> games = gameRepo.findAllByUser(user.getId());
+				for(MongoUser user : (Collection<MongoUser>) userList) {
+					List<MongoGame> games = gameRepo.findAllByUserId(user.getUsername());
 					int sr = getSuccessRate(games)[2];
 					
 					if(firstLoopFlag) {
@@ -176,17 +195,17 @@ public class GameService implements IGameService {
 	
 	@Override
 	public ResponseDto findWinner() {
-		User winnerUser = null;
+		MongoUser winnerUser = null;
 		int srWinner = 0;
-		Iterable<User> userList = userRepo.findAll();
+		Iterable<MongoUser> userList = userRepo.findAll();
 		
 		if(userList instanceof Collection) {
-			if(((Collection<User>) userList).size() < 1) {
+			if(((Collection<MongoUser>) userList).size() < 1) {
 				return new MessageResponseDto("No hay usuarios registrados.");
 			} else {
 				boolean firstLoopFlag = true;
-				for(User user : (Collection<User>) userList) {
-					List<Game> games = gameRepo.findAllByUser(user.getId());
+				for(MongoUser user : (Collection<MongoUser>) userList) {
+					List<MongoGame> games = gameRepo.findAllByUserId(user.getUsername());
 					int sr = getSuccessRate(games)[2];
 					
 					if(firstLoopFlag) {
@@ -208,7 +227,9 @@ public class GameService implements IGameService {
 	}
 	
 	/* int[3] = {successCount, totalGames, successRate }*/
-	private int[] getSuccessRate(List<Game> games) {
+	
+	
+	private int[] getSuccessRate(List<MongoGame> games) {
 		int total = games.size();
 		
 		if(total == 0) {
@@ -217,7 +238,7 @@ public class GameService implements IGameService {
 		
 		int successCount = 0;
 		
-		for(Game game : games) {
+		for(MongoGame game : games) {
 			if(game.getResult()) {
 				successCount++;
 			}
@@ -227,7 +248,7 @@ public class GameService implements IGameService {
 		
 		return new int[] {successCount, total, (int) (successRate * 100)};
 	}
-	
+
 	
 	
 }

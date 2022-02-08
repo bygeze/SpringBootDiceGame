@@ -1,4 +1,4 @@
-package com.example.game.repositories;
+package com.example.game.repositories.mysql;
 
 import java.util.List;
 

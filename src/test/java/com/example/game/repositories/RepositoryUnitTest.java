@@ -11,8 +11,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 
 import com.example.game.models.Game;
-import com.example.game.repositories.IGameRepository;
-import com.example.game.repositories.IUserRepository;
+import com.example.game.repositories.mysql.IGameRepository;
+import com.example.game.repositories.mysql.IUserRepository;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest

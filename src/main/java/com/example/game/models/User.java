@@ -4,12 +4,15 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
 
 @Entity
@@ -18,7 +21,7 @@ public class User {
 	// unicos
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long id;
+	private String id;
 	
 	@Column
 	private String username;
@@ -26,11 +29,17 @@ public class User {
 	@Column
 	private Date registrationDate;
 	
-	@OneToMany(mappedBy = "user")
-	private List<Game> games;
+	//@OneToMany(mappedBy = "user")
+	/*
+	@Column	
+	@ElementCollection
+	@DBRef
+	private List<Game> games;*/
 	
-	public User() {
-		
+	public User(String id, String username, Date date) {
+		this.id = id;
+		this.username = username;
+		this.registrationDate = date;
 	}
 	
 	public User(String username, Date date) {
@@ -38,7 +47,7 @@ public class User {
 		this.registrationDate = date;
 	}
 	
-	public Long getId() {
+	public String getId() {
 		return this.id;
 	}
 	
@@ -50,7 +59,7 @@ public class User {
 		return this.registrationDate;
 	}
 	
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	

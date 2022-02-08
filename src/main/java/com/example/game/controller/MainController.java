@@ -20,14 +20,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.game.dto.AuthUser;
 import com.example.game.dto.ResponseDto;
-import com.example.game.models.User;
 import com.example.game.services.GameService;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 @RestController
-@CrossOrigin
+
 public class MainController {
 	private final GameService gameService;
 	
@@ -35,8 +34,6 @@ public class MainController {
 	public MainController(GameService gameService) {
 		this.gameService = gameService;
 	}
-	
-	
 	
 	@GetMapping("/test")
 	public String test() {
@@ -82,25 +79,26 @@ public class MainController {
 	
 	// play game
 	@PostMapping("/players/{id}/games")
-	public ResponseEntity<ResponseDto> playGame(@PathVariable("id") Long id) {
+	public ResponseEntity<ResponseDto> playGame(@PathVariable("id") String id) {
 		
 		return new ResponseEntity<>(gameService.userPlayGame(id), HttpStatus.OK);
-		
 		
 	}
 	
 	// get all games from player
 	@GetMapping("/players/{id}/games")
-	public ResponseEntity<List<ResponseDto>> findAllGames(@PathVariable("id") Long id) {
+	public ResponseEntity<List<ResponseDto>> findAllGames(@PathVariable("id") String id) {
 	
 		return new ResponseEntity<>(gameService.findAllGames(id), HttpStatus.OK);
+		
 	}
 	
 	// delete all games from player
 	@DeleteMapping("/players/{id}/games")
-	public ResponseEntity<ResponseDto> deleteAllGames(@PathVariable("id") Long id) {
+	public ResponseEntity<ResponseDto> deleteAllGames(@PathVariable("id") String id) {
 		
 		return new ResponseEntity<>(gameService.deleteAllGames(id), HttpStatus.OK);
+	
 	}
 	
 	// get all players with success rate
@@ -114,7 +112,6 @@ public class MainController {
 	public ResponseEntity<ResponseDto> globalSuccessRate() {
 		
 		return new ResponseEntity<>(gameService.findGlobalSuccessRate(), HttpStatus.OK);
-		
 	}
 	
 	@GetMapping("players/ranking/winner") 
