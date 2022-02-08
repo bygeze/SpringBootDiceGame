@@ -1,0 +1,280 @@
+{
+	"info": {
+		"_postman_id": "9ee3486f-e2f7-46e8-bd4c-c93a2dd669eb",
+		"name": "Joc de Daus",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Make login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "user",
+							"value": "Gus",
+							"type": "default"
+						},
+						{
+							"key": "pass",
+							"value": "asd123",
+							"type": "default"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/login?username=Gus&password=asd123",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"login"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "Gus"
+						},
+						{
+							"key": "password",
+							"value": "asd123"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Crear jugador",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "Mar",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/players",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"players"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Realitzar tirada",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/players/1/games",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"players",
+						"1",
+						"games"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Veure tirades de jugador",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "localhost:8080/players/1/games",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"players",
+						"1",
+						"games"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Esborrar tirades de jugador",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "localhost:8080/players/1/games",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"players",
+						"1",
+						"games"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "See players & succes rate",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "Vosta"
+				},
+				"url": {
+					"raw": "localhost:8080/players",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"players"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Ranking total mitjá",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "localhost:8080/players/ranking",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"players",
+						"ranking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Jugador amb menys exit",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "localhost:8080/players/ranking/loser",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"players",
+						"ranking",
+						"loser"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Jugador amb mes exit",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "localhost:8080/players/ranking/winner",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"players",
+						"ranking",
+						"winner"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

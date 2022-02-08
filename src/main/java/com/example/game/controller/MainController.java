@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.game.dto.AuthUser;
 import com.example.game.dto.ResponseDto;
-import com.example.game.models.User;
 import com.example.game.services.GameService;
 
 import io.jsonwebtoken.Jwts;
