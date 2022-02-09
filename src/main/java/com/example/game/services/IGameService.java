@@ -14,4 +14,6 @@ public interface IGameService {
 	public ResponseDto findGlobalSuccessRate();
 	public ResponseDto findLoser();
 	public ResponseDto findWinner();
+	public ResponseDto changeUsername(Long id, String newName);
+	
 }

@@ -207,6 +207,23 @@ public class GameService implements IGameService {
 		}
 	}
 	
+	@Override
+	public ResponseDto changeUsername(Long id, String newName) {
+		Optional<User> user = userRepo.findById(id);
+		
+		if(user.isEmpty()) {
+			return new MessageResponseDto("User not found");
+		} else {
+			String oldName = user.get().getUsername();
+			user.get().setUsername(newName);
+			userRepo.save(user.get());
+			
+			return new MessageResponseDto(oldName + " cambio su nombre a " + newName);
+		}
+		
+		
+	}
+	
 	/* int[3] = {successCount, totalGames, successRate }*/
 	private int[] getSuccessRate(List<Game> games) {
 		int total = games.size();

@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.game.dto.AuthUser;
+import com.example.game.dto.ReqIdAndUsernameDto;
 import com.example.game.dto.ResponseDto;
 import com.example.game.services.GameService;
 
@@ -124,5 +126,11 @@ public class MainController {
 	@GetMapping("players/ranking/loser") 
 	public ResponseEntity<ResponseDto> findLoser() {
 		return new ResponseEntity<>(gameService.findLoser(), HttpStatus.OK);
+	}
+	
+	@PutMapping("players")
+	public ResponseEntity<ResponseDto> changeUsername(@RequestBody(required = true) ReqIdAndUsernameDto req) {
+		
+		return new ResponseEntity<>(gameService.changeUsername(req.getId(), req.getUsername()), HttpStatus.OK);
 	}
 }
