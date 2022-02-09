@@ -74,13 +74,13 @@ public class Game {
 	}
 	
 	private void play() {
-		dado1 = throwDice();
-		dado2 = throwDice();
+		this.dado1 = throwDice();
+		this.dado2 = throwDice();
 		
-		if(dado1 + dado2 == 7) {
-			result = true;
+		if(this.dado1 + this.dado2 == 7) {
+			this.result = true;
 		} else {
-			result = false;
+			this.result = false;
 		}
 	}
 	
